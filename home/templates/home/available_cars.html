@@ -1,0 +1,56 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+    <form method="POST" class="form-inline mt-4 mb-4" autocomplete="off">
+        {% csrf_token %}
+        <div class="form-group mx-sm-3 mb-2">
+            <label for="from_date" class="sr-only">From Date:</label>
+            <input type="date" name="from_date" class="form-control" placeholder="From Date" required>
+        </div>
+        <div class="form-group mx-sm-3 mb-2">
+            <label for="to_date" class="sr-only">To Date:</label>
+            <input type="date" name="to_date" class="form-control" placeholder="To Date" required>
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Search</button>
+        <button type="reset" class="btn btn-secondary mb-2 ml-2">Reset</button>
+    </form>
+    {% if available_cars %}
+        <div class="row">
+            {% for car in available_cars %}
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <img class="card-img-top" src="{{ car.picture.url }}" width="400px" height="400px"
+                             alt="Car Picture">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ car.car_model }}</h5>
+                            <p class="card-text">{{ car.year }} | {{ car.doors }} Doors | {{ car.seats }} Seats |
+                                AC: {{ car.ac|yesno:"Yes,No" }}</p>
+                            <p class="card-text">{{ car.get_gearbox_display }} | {{ car.get_fuel_display }}</p>
+
+
+                            {% if user.is_authenticated %}
+                                <form method="POST" action="{% url 'home:rent_car' car.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="from_date" value="{{ request.POST.from_date }}">
+                                <input type="hidden" name="to_date" value="{{ request.POST.to_date }}">
+                                <button class="btn btn-danger " type="submit">Rent me :)</button>
+                            {% else %}
+                                <a class="btn btn-danger" href="{% url 'user:login' %}" role="button">Login first</a>
+                            {% endif %}
+                            <h5 class="card-title animate__animated animate__bounceIn text-danger">{{ car.car_model.car_model_price|floatformat:2 }}
+                                MAD</h5>
+                            </form>
+
+
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-md-12">
+                    <p>No available cars found.</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

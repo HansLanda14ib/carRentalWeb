@@ -33,7 +33,7 @@ class CarModel(models.Model):
     car_brand = models.ForeignKey(CarBrand, on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.car_brand.name + " " + self.name
+        return self.name
 
 
 class Car(models.Model):
@@ -69,10 +69,13 @@ class Rental(models.Model):
     client = models.ForeignKey(CustomUser, related_name='client', on_delete=models.PROTECT)
     start_date = models.DateField()
     end_date = models.DateField()
-    rental_price = models.DecimalField(max_digits=7, decimal_places=2)
+    rental_price = models.FloatField()
     created_at = models.DateTimeField(default=timezone.now)
     paid = models.BooleanField(default=False)
     confirmed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.client.username) + str(self.car.car_model)
 
     def calculate_cost(self):
         days = (self.end_date - self.start_date).days + 1

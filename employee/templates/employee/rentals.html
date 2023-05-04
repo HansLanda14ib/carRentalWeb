@@ -1,0 +1,71 @@
+{% extends 'employee/base.html' %}
+{% load static %}
+{% block content %}
+    <!-- load jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <h1>Rentals</h1>
+    {% if rentals %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Car</th>
+                <th>Client</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Total Cost</th>
+                <th>Paid</th>
+                <th>Confirmed</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for rental in rentals %}
+                <tr>
+                    <td>{{ rental.car }}</td>
+                    <td>{{ rental.client }}</td>
+                    <td>{{ rental.start_date }}</td>
+                    <td>{{ rental.end_date }}</td>
+                    <td>{{ rental.rental_price }}</td>
+                    <td>
+                        <input type="checkbox" name="paid" class="paid-checkbox"
+                               data-rental-id="{{ rental.id }}" {% if rental.paid %}checked{% endif %}
+                               onclick="return confirm('Are you sure you want to update payment status?');">
+                    </td>
+                    <td>
+
+                        <input type="checkbox" name="confirmed" class="confirmed-checkbox"
+                               data-rental-id="{{ rental.id }}" {% if rental.confirmed %}checked{% endif %}
+                               onclick="return confirm('Are you sure you want to update confirmation status?');">
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No rentals found.</p>
+    {% endif %}
+    <script>
+        $(document).ready(function () {
+            $('.paid-checkbox, .confirmed-checkbox').change(function () {
+                var checkbox = $(this);
+                var rentalId = checkbox.data('rental-id');
+                var isPaid = $('.paid-checkbox[data-rental-id="' + rentalId + '"]').prop('checked');
+                var isConfirmed = $('.confirmed-checkbox[data-rental-id="' + rentalId + '"]').prop('checked');
+
+                $.ajax({
+                    url: '/employee/update_rental/',
+                    type: 'POST',
+                    data: {
+                        'rental_id': rentalId,
+                        'is_paid': isPaid,
+                        'is_confirmed': isConfirmed,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        console.log(response);
+                    }
+                });
+            });
+        });
+    </script>
+
+{% endblock %}

@@ -35,7 +35,7 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             user.roles.add(Role.objects.get(name=RoleEnum.CLIENT.value))
-            messages.success(request, 'Your account has been successfully created check your email.')
+            messages.success(request, 'Your account has been successfully created.')
             return redirect('home:index')
         else:
             return render(
@@ -64,16 +64,16 @@ def login_view(request):
         password = request.POST['password']
         if not username or not password:
             return render(request, 'user/login.html', {
-                'error_message': 'Username and Password are required.',
+                'error_message': 'Sorry, Username and Password are required.',
             })
         user = authenticate(request, username=username, password=password)
         if user is None:
             return render(request, 'user/login.html', {
-                'error_message': 'Your username or password is invalid.',
+                'error_message': 'Sorry but your username or password is invalid.',
             })
         if not user.is_active:
             return render(request, 'user/login.html', {
-                'error_message': 'Your account is deactivated contact administration.',
+                'error_message': 'Your account is deactivated, please contact administration.',
             })
         login(request, user)
         user_roles = get_custom_user_roles(user.id)

@@ -1,0 +1,66 @@
+{% extends 'employee/base.html' %}
+
+{% block content %}
+  <div class="container my-4">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <h1 class="text-center mb-4">Add Car</h1>
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="registration_number">Registration Number</label>
+            <input type="text" class="form-control" id="registration_number" name="registration_number" required>
+          </div>
+          <div class="form-group">
+            <label for="year">Year</label>
+            <input type="number" class="form-control" id="year" name="year" required>
+          </div>
+          <div class="form-group">
+            <label for="doors">Doors</label>
+            <input type="number" class="form-control" id="doors" name="doors" required>
+          </div>
+          <div class="form-group">
+            <label for="seats">Seats</label>
+            <input type="number" class="form-control" id="seats" name="seats" required>
+          </div>
+          <div class="form-group">
+            <label for="ac">AC</label>
+            <select class="form-control" id="ac" name="ac" required>
+              <option value="True">Yes</option>
+              <option value="False">No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="gearbox">Gearbox</label>
+            <select class="form-control" id="gearbox" name="gearbox" required>
+              <option value="AT">Automatic</option>
+              <option value="MT">Manual</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="fuel">Fuel</label>
+            <select class="form-control" id="fuel" name="fuel" required>
+              <option value="G">Gasoline</option>
+              <option value="D">Diesel</option>
+              <option value="H">Hybrid</option>
+              <option value="E">Electric</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="picture">Picture</label>
+            <input type="file" class="form-control-file" id="picture" name="picture" accept="image/*" required>
+          </div>
+          <div class="form-group">
+            <label for="car_model">Car Model</label>
+            <select class="form-control" id="car_model" name="car_model" required>
+              {% for car_model in car_models %}
+                <option value="{{ car_model.pk }}">{{ car_model }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Car</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
