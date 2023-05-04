@@ -17,7 +17,7 @@ pip install virtualenv
 ```
 ### Change current directory to `carRentalWeb`
 ```bash
-cd FFRM_API
+cd carRentalWeb
 ```
 ### Create python `virtual environment`
 ```bash
