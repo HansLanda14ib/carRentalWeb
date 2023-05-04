@@ -15,6 +15,6 @@ urlpatterns = [
     path('rentals/', views.rentals, name='rentals'),
     path('rental-income/', views.rental_income, name='rental_income'),
     path('owner/profile/', views.owner_profile, name='owner_profile'),
-
+    path('detail_client/<int:client_id>', views.detail_client, name='detail_client'),
 
 ]

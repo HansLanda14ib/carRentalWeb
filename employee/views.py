@@ -197,3 +197,17 @@ def owner_profile(request):
         'agency': agency,
     }
     return render(request, 'employee/owner_profile.html', context)
+
+
+@login_required
+def detail_client(request, client_id):
+    user = request.user
+    if not user.is_authenticated:
+        return redirect('user:login')
+    user_roles = get_custom_user_roles(request.user.id)
+    if not user_roles['is_owner']:
+        messages.error(request, "You are not authorized to access this page.")
+        return redirect('home:index')
+    client = get_object_or_404(CustomUser, id=client_id)
+    context = {'client': client}
+    return render(request, 'employee/detail_client.html', context)
