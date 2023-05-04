@@ -162,7 +162,7 @@ def update_rental(request):
 @login_required
 def rental_income(request):
     agency = request.user.agency
-    rentals = Rental.objects.filter(car__agency=agency)
+    rentals = Rental.objects.filter(car__agency=agency,paid=True)
 
     total_income = rentals.aggregate(total_income=Sum('rental_price'))['total_income'] or 0
 
