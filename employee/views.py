@@ -6,8 +6,8 @@ from django.shortcuts import redirect
 from django.views.decorators.http import require_POST
 from user.models import CustomUser, Role, RoleEnum
 from user.views import get_custom_user_roles
-from .forms import CarForm
-from employee.models import Car, Agency
+from .forms import CarForm, AgencyForm
+from employee.models import Car
 from django.db.models import Sum, Count
 from django.shortcuts import render
 from django.utils import timezone
@@ -42,6 +42,10 @@ def index(request):
 
 
 def add_car(request):
+    if request.user.agency is None:
+        # Redirect to a different view, or display an error message
+        messages.error(request, "You need to register your agency first.")
+        return redirect('employee:agency')
     user = request.user
     if not user.is_authenticated:
         return redirect('user:login')
@@ -50,20 +54,21 @@ def add_car(request):
         return redirect('/admin/')
     if not user_roles['is_owner']:
         return redirect('home:index')
-    if request.method == 'POST':
-        form = CarForm(request.POST, request.FILES)
-        if form.is_valid():
-            car = form.save(commit=False)
-            # set agency as the current user's agency
-            car.agency = request.user.agency
-            car.save()
-            return redirect('employee:cars')
-    else:
-        form = CarForm()
+    form = CarForm(request.POST or None, request.FILES or None)
+    if form.is_valid():
+        car = form.save(commit=False)
+        car.agency = request.user.agency
+        car.save()
+        messages.success(request, "Car added successfully!")
+        return redirect('employee:cars')
     return render(request, 'employee/add_car.html', {'form': form})
 
 
 def cars(request):
+    if request.user.agency is None:
+        # Redirect to a different view, or display an error message
+        messages.error(request, "You need to register your agency first.")
+        return redirect('employee:agency')
     user = request.user
     if not user.is_authenticated:
         return redirect('user:login')
@@ -83,6 +88,10 @@ def cars(request):
 
 @login_required
 def rental_income(request, car_id):
+    if request.user.agency is None:
+        # Redirect to a different view, or display an error message
+        messages.error(request, "You need to register your agency first.")
+        return redirect('employee:agency')
     car = get_object_or_404(Car, id=car_id)
     rental_income = Rental.objects.filter(car=car, paid=True).aggregate(Sum('rental_price'))
     total_income = rental_income['rental_price__sum'] or 0
@@ -91,11 +100,16 @@ def rental_income(request, car_id):
 
 
 def update_car(request, car_id):
+    if request.user.agency is None:
+        # Redirect to a different view, or display an error message
+        messages.error(request, "You need to register your agency first.")
+        return redirect('employee:agency')
     car = get_object_or_404(Car, id=car_id)
     if request.method == 'POST':
         form = CarForm(request.POST, request.FILES, instance=car)
         if form.is_valid():
             form.save()
+            messages.success(request, "Car has been updated successfully.")
             return redirect('employee:cars')
     else:
         form = CarForm(instance=car)
@@ -107,9 +121,14 @@ def update_car(request, car_id):
 
 
 def delete_car(request, car_id):
+    if request.user.agency is None:
+        # Redirect to a different view, or display an error message
+        messages.error(request, "You need to register your agency first.")
+        return redirect('employee:agency')
     car = get_object_or_404(Car, id=car_id)
     if request.method == 'POST':
         car.delete()
+        messages.add_message(request, messages.INFO, 'Car has been deleted.')
         return redirect('employee:cars')
     context = {
         'car': car,
@@ -118,6 +137,10 @@ def delete_car(request, car_id):
 
 
 def detail_car(request, car_id):
+    if request.user.agency is None:
+        # Redirect to a different view, or display an error message
+        messages.error(request, "You need to register your agency first.")
+        return redirect('employee:agency')
     car = get_object_or_404(Car, id=car_id)
     context = {'car': car}
     return render(request, 'employee/detail_car.html', context)
@@ -125,6 +148,10 @@ def detail_car(request, car_id):
 
 @login_required
 def rentals(request):
+    if request.user.agency is None:
+        # Redirect to a different view, or display an error message
+        messages.error(request, "You need to register your agency first.")
+        return redirect('employee:agency')
     user = request.user
     if not user.is_authenticated:
         return redirect('user:login')
@@ -147,6 +174,10 @@ def rentals(request):
 
 @require_POST
 def update_rental(request):
+    if request.user.agency is None:
+        # Redirect to a different view, or display an error message
+        messages.error(request, "You need to register your agency first.")
+        return redirect('employee:agency')
     rental_id = request.POST.get('rental_id')
     is_paid = request.POST.get('is_paid') == 'true'
     is_confirmed = request.POST.get('is_confirmed') == 'true'
@@ -161,6 +192,10 @@ def update_rental(request):
 
 @login_required
 def rental_income(request):
+    if request.user.agency is None:
+        # Redirect to a different view, or display an error message
+        messages.error(request, "You need to register your agency first.")
+        return redirect('employee:agency')
     agency = request.user.agency
     rentals = Rental.objects.filter(car__agency=agency, paid=True)
 
@@ -201,6 +236,10 @@ def owner_profile(request):
 
 @login_required
 def detail_client(request, client_id):
+    if request.user.agency is None:
+        # Redirect to a different view, or display an error message
+        messages.error(request, "You need to register your agency first.")
+        return redirect('employee:agency')
     user = request.user
     if not user.is_authenticated:
         return redirect('user:login')
@@ -211,3 +250,21 @@ def detail_client(request, client_id):
     client = get_object_or_404(CustomUser, id=client_id)
     context = {'client': client}
     return render(request, 'employee/detail_client.html', context)
+
+
+def agency_view(request):
+    if request.user.agency is not None:
+        # Redirect to a different view, or display an error message
+        return redirect('employee:owner_profile')
+    if request.method == 'POST':
+        form = AgencyForm(request.POST)
+        if form.is_valid():
+            agency = form.save()
+            # Link the agency to the current user's agency field
+            request.user.agency = agency
+            request.user.save()
+            # Redirect to a success page
+            return redirect('employee:owner_profile')
+    else:
+        form = AgencyForm()
+    return render(request, 'employee/agency.html', {'form': form})

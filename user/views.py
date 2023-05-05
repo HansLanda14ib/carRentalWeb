@@ -24,9 +24,15 @@ def get_custom_user_roles(id):
 
 
 def register_view(request):
-    if request.user.is_authenticated:
-        messages.info(request, 'Your are already logged in.')
-        return render(request, 'home/index.html')
+    user = request.user
+    if user.is_authenticated:
+        user_roles = get_custom_user_roles(user.id)
+        if user_roles['is_owner']:
+
+            return redirect('employee:index')
+        elif user_roles['is_client']:
+
+            return redirect('home:index')
 
     cities = City.objects.all()
 
@@ -34,7 +40,10 @@ def register_view(request):
         form = UserRegistrationForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
-            user.roles.add(Role.objects.get(name=RoleEnum.CLIENT.value))
+            if form.cleaned_data['register_as_owner']:
+                user.roles.add(Role.objects.get(name=RoleEnum.OWNER.value))
+            else:
+                user.roles.add(Role.objects.get(name=RoleEnum.CLIENT.value))
             messages.success(request, 'Your account has been successfully created.')
             return redirect('home:index')
         else:
@@ -56,9 +65,15 @@ def register_view(request):
 
 
 def login_view(request):
-    if request.user.is_authenticated:
-        messages.success(request, 'You already logged in.')
-        return redirect("home:index")
+    user = request.user
+    if user.is_authenticated:
+        user_roles = get_custom_user_roles(user.id)
+        if user_roles['is_owner']:
+
+            return redirect('employee:index')
+        elif user_roles['is_client']:
+
+            return redirect('home:index')
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']

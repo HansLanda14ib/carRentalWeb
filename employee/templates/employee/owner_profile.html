@@ -29,13 +29,24 @@
                     <div class="card-header bg-secondary text-white">
                         <h4 class="card-title mb-0">Agency Info</h4>
                     </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>Name:</strong> {{ agency.name }}</li>
-                        <li class="list-group-item"><strong>Email:</strong> {{ agency.email }}</li>
-                        <li class="list-group-item"><strong>Phone:</strong> {{ agency.phone }}</li>
-                        <li class="list-group-item"><strong>Address:</strong> {{ agency.address }}</li>
-                        <li class="list-group-item"><strong>City:</strong> {{ agency.city }}</li>
-                    </ul>
+
+                    {% if agency %}
+
+
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Name:</strong> {{ agency.name }}</li>
+                            <li class="list-group-item"><strong>Email:</strong> {{ agency.email }}</li>
+                            <li class="list-group-item"><strong>Phone:</strong> {{ agency.phone }}</li>
+                            <li class="list-group-item"><strong>Address:</strong> {{ agency.address }}</li>
+                            <li class="list-group-item"><strong>City:</strong> {{ agency.city }}</li>
+                        </ul>
+                    {% else %}
+                        <h4 class="card-title mb-0">Click bellow to register Agency</h4>
+                        <div class="col-md-6">
+                            <a href="{% url 'employee:agency' %}" class="btn btn-secondary">Add agency</a>
+                        </div>
+
+                    {% endif %}
                 </div>
             </div>
         </div>

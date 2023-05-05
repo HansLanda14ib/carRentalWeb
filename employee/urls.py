@@ -1,4 +1,5 @@
-from django.urls import path, re_path
+from django.urls import path
+
 from . import views
 
 app_name = 'employee'
@@ -16,5 +17,6 @@ urlpatterns = [
     path('rental-income/', views.rental_income, name='rental_income'),
     path('owner/profile/', views.owner_profile, name='owner_profile'),
     path('detail_client/<int:client_id>', views.detail_client, name='detail_client'),
+    path('agency/', views.agency_view, name='agency'),
 
 ]

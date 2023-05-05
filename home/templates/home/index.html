@@ -12,7 +12,7 @@
             margin: auto;
         }
 
-         #carouselExampleInterval .carousel-caption {
+        #carouselExampleInterval .carousel-caption {
             position: absolute;
 
             transform: translateY(-50%);
@@ -21,56 +21,54 @@
             z-index: 10;
         }
 
-         #carouselExampleInterval .carousel-caption h5 {
+        #carouselExampleInterval .carousel-caption h5 {
             font-size: 3rem;
             font-weight: bold;
         }
 
-         #carouselExampleInterval .carousel-caption p {
+        #carouselExampleInterval .carousel-caption p {
             font-size: 1.5rem;
             margin-top: 1rem;
         }
     </style>
 {% endblock %}
 {% block content %}
-    <div id="carouselExampleInterval" class="carousel slide" Fdata-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active" data-bs-interval="4000">
-                <div class="carousel-caption d-inline  d-md-block">
-                    <h5>Free cancellations on most booking </h5>
-                    <p>Connecting you to the biggest brands in car rental.</p>
-                </div>
-                <img src="{% static 'home/images/4.jpg' %}" class="d-block w-100" alt="...">
+    <div class="flex-container">
+        <div id="carouselExampleInterval" class="carousel slide" Fdata-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active" data-bs-interval="4000">
+                    <div class="carousel-caption d-inline  d-md-block">
+                        <h5>Free cancellations on most booking </h5>
+                        <p>Connecting you to the biggest brands in car rental.</p>
+                    </div>
+                    <img src="{% static 'home/images/4.jpg' %}" height="540px" class="d-block w-100" alt="...">
 
-            </div>
-            <div class="carousel-item" data-bs-interval="4000">
-                <img src="{% static 'home/images/5.jpg' %}" class="d-block w-100" alt="...">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>60,000+ locations </h5>
-                    <p>Clean cars. Flexible bookings. Socially distant rental counters..</p>
+                </div>
+                <div class="carousel-item" data-bs-interval="4000">
+                    <img src="{% static 'home/images/5.jpg' %}" height="540px" class="d-block w-100" alt="...">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>60,000+ locations </h5>
+                        <p>Clean cars. Flexible bookings. Socially distant rental counters..</p>
+                    </div>
+                </div>
+                <div class="carousel-item" data-bs-interval="4000">
+                    <img src="{% static 'home/images/car3.jpg' %}" height="540px" class="d-block w-100" alt="...">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>Found the same deal for less?</h5>
+                        <p>We’ll match the price.</p>
+                    </div>
                 </div>
             </div>
-            <div class="carousel-item" data-bs-interval="4000">
-                <img src="{% static 'home/images/8.jpg' %}" class="d-block w-100" alt="...">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Found the same deal for less?</h5>
-                    <p>We’ll match the price.</p>
-                </div>
-            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval"
+                    data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval"
+                    data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval"
-                data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval"
-                data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
     </div>
-{% endblock %}
-
-{% block javascript %}
-
 {% endblock %}
